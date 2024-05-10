@@ -10,17 +10,18 @@ import Button from "../Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const LISTS = ["TODO", "IN PROGRESS", "COMPLETED"];
 const PRIORIRY = ["HIGH", "MEDIUM", "NORMAL", "LOW"];
 
 const uploadedFileURLs = [];
 
-const AddTask = ({ open, setOpen }) => {
+const AddTask = ({ open, setOpen, task, type }) => {
   const { user } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
-  const task = "";
+  // const task = "";
 
   const {
     register,
@@ -35,25 +36,53 @@ const AddTask = ({ open, setOpen }) => {
   const [assets, setAssets] = useState([]);
   const [uploading, setUploading] = useState(false);
   const submitHandler = async (data) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_URL}/api/task/create`,
-        {
-          title: data.title,
-          date: data.date,
-          priority: priority,
-          stage: stage,
-          team: team,
-          user: user,
+    if (type === "edit") {
+      try {
+        const response = await axios.put(
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/task/update/${task._id}`,
+          {
+            title: data.title,
+            date: data.date,
+            priority: priority.toLowerCase(),
+            stage: stage.toLowerCase(),
+            team: team,
+            user: user,
+          }
+        );
+        if (response.data) {
+          // navigate("/tasks");
+          toast.success("task edited succesfully !");
+          location.reload();
+        } else {
+          console.log("error");
         }
-      );
-      if (response.data) {
-        navigate("/tasks");
-      } else {
-        console.log("error");
+      } catch (error) {
+        toast.error("something went wrong !");
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_APP_BACKEND_URL}/api/task/create`,
+          {
+            title: data.title,
+            date: data.date,
+            priority: priority,
+            stage: stage,
+            team: team,
+            user: user,
+          }
+        );
+        if (response.data) {
+          toast.success("task created succesfully !!");
+          navigate("/tasks");
+        } else {
+          console.log("error");
+        }
+      } catch (error) {
+        toast.error("something went wrong !");
+        console.log(error);
+      }
     }
     setOpen(false);
   };
@@ -75,6 +104,7 @@ const AddTask = ({ open, setOpen }) => {
           <div className="mt-2 flex flex-col gap-6">
             <Textbox
               placeholder="Task Title"
+              defaultValue={task?.title}
               type="text"
               name="title"
               label="Task Title"
@@ -106,6 +136,12 @@ const AddTask = ({ open, setOpen }) => {
                   placeholder="Date"
                   type="date"
                   name="date"
+                  // defaultValue={new Date(task?.date)}
+                  defaultValue={
+                    task?.date
+                      ? new Date(task.date).toISOString().substring(0, 10)
+                      : ""
+                  }
                   label="Task Date"
                   className="w-full rounded"
                   register={register("date", {

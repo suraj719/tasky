@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setCredentials } from "../redux/slices/authSlice";
 import { toast } from "sonner";
-const Login = () => {
+const Register = () => {
   const { user } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -22,22 +22,23 @@ const Login = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_URL}/api/user/login`,
+        `${import.meta.env.VITE_APP_BACKEND_URL}/api/user/register`,
         {
+          name: data.name,
           email: data.email,
           password: data.password,
         }
       );
       if (response.data) {
-        toast.success("Logged in succesfully !!");
         navigate("/dashboard");
+        toast.success("Account created succesfully !!");
         dispatch(setCredentials(response.data));
       } else {
-        toast.error("Invalid credentials");
+        toast.error("Something went wrong!!");
         console.log("error");
       }
     } catch (error) {
-      toast.error("invalid credentails !");
+      toast.error("Something went wrong!!");
       setLoading(false);
       console.log(error);
     }
@@ -71,11 +72,21 @@ const Login = () => {
           >
             <div className="">
               <p className="text-blue-600 text-3xl font-bold text-center">
-                Welcome back!
+                Create new Account !
               </p>
             </div>
-
             <div className="flex flex-col gap-y-5">
+              <Textbox
+                placeholder="full Name"
+                type="test"
+                name="name"
+                label="Full Name"
+                className="w-full rounded-full"
+                register={register("name", {
+                  required: "name is required!",
+                })}
+                error={errors.name ? errors.name.message : ""}
+              />
               <Textbox
                 placeholder="email@example.com"
                 type="email"
@@ -87,6 +98,7 @@ const Login = () => {
                 })}
                 error={errors.email ? errors.email.message : ""}
               />
+
               <Textbox
                 placeholder="your password"
                 type="password"
@@ -113,9 +125,9 @@ const Login = () => {
                 />
               )}
               <div className="text-center">
-                Don't have an account ?{" "}
-                <Link to="/register">
-                  <span className="underline">Register</span>
+                Already have an account ?{" "}
+                <Link to="/login">
+                  <span className="underline">Login</span>
                 </Link>
               </div>
             </div>
@@ -126,4 +138,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -21,8 +21,6 @@ export const registerUser = async (req, res) => {
       email,
       password,
       isAdmin,
-      role,
-      title,
     });
 
     if (user) {
@@ -52,13 +50,6 @@ export const loginUser = async (req, res) => {
       return res
         .status(401)
         .json({ status: false, message: "Invalid email or password." });
-    }
-
-    if (!user?.isActive) {
-      return res.status(401).json({
-        status: false,
-        message: "User account has been deactivated, contact the administrator",
-      });
     }
 
     const isMatch = await user.matchPassword(password);

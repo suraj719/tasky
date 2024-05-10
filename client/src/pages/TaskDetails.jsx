@@ -19,6 +19,7 @@ import Loading from "../components/Loader";
 import Button from "../components/Button";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 // import { tasks } from "../assets/data";
 
 const ICONS = {
@@ -302,11 +303,13 @@ const Activities = ({ activity, id, task, setTask }) => {
       );
       if (response.data) {
         // navigate("/tasks");
+        toast.success("new activity created !!");
         setTask(response.data.task);
       } else {
         console.log("error");
       }
     } catch (error) {
+      toast.error("something went wrong !!");
       console.log(error);
     }
   };

@@ -4,6 +4,7 @@ import { Dialog } from "@headlessui/react";
 import Textbox from "../Textbox";
 import Button from "../Button";
 import axios from "axios";
+import { toast } from "sonner";
 const AddSubTask = ({ open, setOpen, id, task }) => {
   const {
     register,
@@ -30,12 +31,14 @@ const AddSubTask = ({ open, setOpen, id, task }) => {
       );
       if (response.data) {
         // navigate("/dashboard");
+        toast.success("subtask created succesfully !!");
         location.reload();
         setOpen(false);
       } else {
         console.log("error");
       }
     } catch (error) {
+      toast.error("Something went wrong !!");
       console.log(error);
     }
     // try {

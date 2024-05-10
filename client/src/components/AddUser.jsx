@@ -8,6 +8,7 @@ import Loading from "./Loader";
 import Button from "./Button";
 import axios from "axios";
 import { setCredentials } from "../redux/slices/authSlice";
+import { toast } from "sonner";
 
 const AddUser = ({ open, setOpen, userData }) => {
   let defaultValues = userData ?? {};
@@ -39,6 +40,7 @@ const AddUser = ({ open, setOpen, userData }) => {
       );
       if (response.data) {
         // navigate("/dashboard");
+        toast.success("member added succesfully !!");
         setOpen(false);
         dispatch(setCredentials(response.data.user));
       } else {

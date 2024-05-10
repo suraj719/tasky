@@ -1,29 +1,31 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import { BsChevronExpand } from "react-icons/bs";
-import { summary } from "../../assets/data";
 import clsx from "clsx";
 import { getInitials } from "../../utils";
 import { MdCheck } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const UserList = ({ setTeam, team }) => {
-  // const data = summary.users;
   const { user } = useSelector((state) => state.auth);
   let data = user.team;
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState(team || []);
+  console.log(selectedUsers);
 
   const handleChange = (el) => {
     setSelectedUsers(el);
     setTeam(el);
   };
-  // useEffect(() => {
-  //   if (team?.length < 1) {
-  //     data && setSelectedUsers([data[0]]);
-  //   } else {
-  //     setSelectedUsers(team);
-  //   }
-  // }, []);
+
+  useEffect(() => {
+    if (team?.length > 0) {
+      setSelectedUsers(team);
+    }
+  }, [team]);
+
+  const isSelected = (userName) => {
+    return selectedUsers.some((user) => user.name === userName);
+  };
 
   return (
     <div>
@@ -69,7 +71,9 @@ const UserList = ({ setTeam, team }) => {
                       <div
                         className={clsx(
                           "flex items-center gap-2 truncate",
-                          selected ? "font-medium" : "font-normal"
+                          selected || isSelected(user.name)
+                            ? "font-medium"
+                            : "font-normal"
                         )}
                       >
                         <div className="w-6 h-6 rounded-full text-white flex items-center justify-center bg-violet-600">
@@ -79,11 +83,11 @@ const UserList = ({ setTeam, team }) => {
                         </div>
                         <span>{user.name}</span>
                       </div>
-                      {selected ? (
+                      {isSelected(user.name) && (
                         <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                           <MdCheck className="h-5 w-5" aria-hidden="true" />
                         </span>
-                      ) : null}
+                      )}
                     </>
                   )}
                 </Listbox.Option>

@@ -14,6 +14,7 @@ import Trash from "./pages/Trash";
 import Users from "./pages/Users";
 import Dashboard from "./pages/dashboard";
 import { setCredentials, setOpenSidebar } from "./redux/slices/authSlice";
+import Register from "./pages/Register";
 
 function Layout() {
   const dispatch = useDispatch();
@@ -113,9 +114,10 @@ function App() {
           <Route path="/task/:id" element={<TaskDetails />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
 
-      <Toaster richColors />
+      <Toaster richColors position="top-right" />
     </main>
   );
 }

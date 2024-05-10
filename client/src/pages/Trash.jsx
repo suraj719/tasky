@@ -14,6 +14,7 @@ import { PRIOTITYSTYELS, TASK_TYPE } from "../utils";
 import ConfirmatioDialog from "../components/Dialogs";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
   medium: <MdKeyboardArrowUp />,
@@ -69,10 +70,12 @@ const Trash = () => {
         {}
       );
       if (response.data) {
+        toast.success(`Successfully ${type}d record`);
       } else {
         console.log("error");
       }
     } catch (error) {
+      toast.error("something went wrong !!");
       console.log(error);
     }
     fetchTasks();

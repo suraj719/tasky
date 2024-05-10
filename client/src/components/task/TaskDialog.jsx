@@ -10,6 +10,7 @@ import AddTask from "./AddTask";
 import AddSubTask from "./AddSubTask";
 import ConfirmatioDialog from "../Dialogs";
 import axios from "axios";
+import { toast } from "sonner";
 
 const TaskDialog = ({ task }) => {
   const [open, setOpen] = useState(false);
@@ -28,12 +29,14 @@ const TaskDialog = ({ task }) => {
       );
       if (response.data) {
         // navigate("/dashboard");
+        toast.success("task deleted succesfully !!");
         location.reload();
         setOpenDialog(false);
       } else {
         console.log("error");
       }
     } catch (error) {
+      toast.error("Something went wrong !!");
       console.log(error);
     }
   };
@@ -44,11 +47,11 @@ const TaskDialog = ({ task }) => {
       icon: <AiTwotoneFolderOpen className="mr-2 h-5 w-5" aria-hidden="true" />,
       onClick: () => navigate(`/task/${task._id}`),
     },
-    // {
-    //   label: "Edit",
-    //   icon: <MdOutlineEdit className="mr-2 h-5 w-5" aria-hidden="true" />,
-    //   onClick: () => setOpenEdit(true),
-    // },
+    {
+      label: "Edit",
+      icon: <MdOutlineEdit className="mr-2 h-5 w-5" aria-hidden="true" />,
+      onClick: () => setOpenEdit(true),
+    },
     {
       label: "Add Sub-Task",
       icon: <MdAdd className="mr-2 h-5 w-5" aria-hidden="true" />,
@@ -126,6 +129,7 @@ const TaskDialog = ({ task }) => {
         open={openEdit}
         setOpen={setOpenEdit}
         task={task}
+        type="edit"
         key={new Date().getTime()}
       />
 

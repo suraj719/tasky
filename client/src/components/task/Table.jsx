@@ -14,6 +14,7 @@ import UserInfo from "../UserInfo";
 import Button from "../Button";
 import ConfirmatioDialog from "../Dialogs";
 import axios from "axios";
+import AddTask from "./AddTask";
 
 const ICONS = {
   high: <MdKeyboardDoubleArrowUp />,
@@ -24,12 +25,16 @@ const ICONS = {
 const Table = ({ tasks }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selected, setSelected] = useState(null);
-
+  const [openEdit, setOpenEdit] = useState(false);
+  const [taskk, setTask] = useState(null);
   const deleteClicks = (id) => {
     setSelected(id);
     setOpenDialog(true);
   };
-
+  const editClicks = (t) => {
+    setOpenEdit(true);
+    setTask(t);
+  };
   const deleteHandler = async () => {
     try {
       const response = await axios.put(
@@ -38,12 +43,14 @@ const Table = ({ tasks }) => {
       );
       if (response.data) {
         // navigate("/dashboard");
+        toast.success("task deleted succesfully !!");
         location.reload();
         setOpenDialog(false);
       } else {
         console.log("error");
       }
     } catch (error) {
+      toast.error("Something went wrong !!");
       console.log(error);
     }
   };
@@ -128,6 +135,7 @@ const Table = ({ tasks }) => {
           className="text-blue-600 hover:text-blue-500 sm:px-0 text-sm md:text-base"
           label="Edit"
           type="button"
+          onClick={() => editClicks(task)}
         />
 
         <Button
@@ -159,6 +167,13 @@ const Table = ({ tasks }) => {
         open={openDialog}
         setOpen={setOpenDialog}
         onClick={deleteHandler}
+      />
+      <AddTask
+        open={openEdit}
+        setOpen={setOpenEdit}
+        task={taskk}
+        type="edit"
+        key={new Date().getTime()}
       />
     </>
   );

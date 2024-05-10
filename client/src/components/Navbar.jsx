@@ -8,12 +8,14 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { getInitials } from "../utils";
 import { logout } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const logoutHandler = () => {
+    toast.success("Logged out succesfully !")
     console.log("logout");
     navigate("/login");
     dispatch(logout());
